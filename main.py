@@ -1,4 +1,6 @@
 import time
+import torch
+
 from pathlib import Path
 
 from torch.utils.data import DataLoader
@@ -14,12 +16,13 @@ NUM_HEADS = 4
 
 CHECKPOINT_DIR = Path('/Users/mikhail/PycharmProjects/pytorch_bert/data/bert_checkpoints')
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
     ds = IMDBBertDataset('/Users/mikhail/PycharmProjects/rnn_pytorch/data/imdb.csv', max_length=64)
     dl = DataLoader(ds, batch_size=BATCH_SIZE, shuffle=True)
 
-    bert = BERT(len(ds.vocab), EMB_SIZE, 24, NUM_HEADS)
+    bert = BERT(len(ds.vocab), EMB_SIZE, 24, NUM_HEADS).to(device)
     trainer = BertTrainer(
         model=bert,
         dataset=ds,

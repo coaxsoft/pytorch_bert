@@ -28,7 +28,8 @@ def token_accuracy(result: torch.Tensor, target: torch.Tensor):
 
 class BertTrainer:
 
-    def __init__(self, model: BERT, dataset: IMDBBertDataset, checkpoint_dir: Path = None,
+    def __init__(self, model: BERT, dataset: IMDBBertDataset,
+                 checkpoint_dir: Path = None,
                  save_checkpoint_every: int = 100,
                  batch_size: int = 24,
                  learning_rate: float = 0.005):
