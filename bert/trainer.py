@@ -10,6 +10,8 @@ from torch.utils.data import DataLoader
 from bert.dataset import IMDBBertDataset
 from bert.model import BERT
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 def percentage(batch_size: int, max_len: int, current: int):
     batched_max = max_len // batch_size
@@ -23,7 +25,7 @@ def nsp_accuracy(result: torch.Tensor, target: torch.Tensor):
 
 def token_accuracy(result: torch.Tensor, target: torch.Tensor):
     s = (result.argmax(-1) == target).sum()
-    return round(float(s / result.size(0)), 2)
+    return round(float(s / (result.size(0) * result.size(1))), 2)
 
 
 class BertTrainer:
@@ -31,8 +33,12 @@ class BertTrainer:
     def __init__(self, model: BERT, dataset: IMDBBertDataset,
                  checkpoint_dir: Path = None,
                  save_checkpoint_every: int = 100,
+                 print_progress_every: int = 10,
+                 print_accuracy_every: int = 50,
                  batch_size: int = 24,
-                 learning_rate: float = 0.005):
+                 learning_rate: float = 0.005,
+                 epochs: int = 5,
+                 ):
         self.model = model
         self.dataset = dataset
         self.batch_size = batch_size
@@ -41,23 +47,28 @@ class BertTrainer:
         self.checkpoint_dir = checkpoint_dir
         self.save_checkpoint_every = save_checkpoint_every
 
-        self.criterion = nn.CrossEntropyLoss()
-        self.ml_criterion = nn.NLLLoss(ignore_index=0)
+        self.criterion = nn.CrossEntropyLoss().to(device)
+        self.ml_criterion = nn.NLLLoss(ignore_index=0).to(device)
         self.optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+        self.epochs = epochs
+
+        self.current_epoch = 0
 
         self._splitter_size = 35
 
         self._ds_len = len(self.dataset)
         self._batched_len = self._ds_len // self.batch_size
 
-        self._print_every = 2
-        self._accuracy_every = 25
+        self._print_every = print_progress_every
+        self._accuracy_every = print_accuracy_every
 
     def print_summary(self):
         ds_len = len(self.dataset)
 
         print("Model Summary\n")
         print('=' * self._splitter_size)
+        print(f"Device: {device}")
         print(f"Training dataset len: {ds_len}")
         print(f"Vocab size: {len(self.dataset.vocab)}")
         print(f"Batch size: {self.batch_size}")
@@ -65,12 +76,18 @@ class BertTrainer:
         print('=' * self._splitter_size)
         print()
 
+    def __call__(self):
+        for self.current_epoch in range(self.epochs):
+            loss = self.train(self.current_epoch)
+            self.save_checkpoint(self.current_epoch, step=-1, loss=loss)
+
     def train(self, epoch: int):
         print(f"Begin epoch {epoch}")
 
         prev = time.time()
         for i, value in enumerate(self.loader):
             index = i + 1
+
             self.optimizer.zero_grad()
 
             inp, mask, mask_target, nsp_target = value
@@ -97,6 +114,7 @@ class BertTrainer:
 
             if index % self.save_checkpoint_every == 0:
                 self.save_checkpoint(epoch, index, loss)
+        return loss
 
     def save_checkpoint(self, epoch, step, loss):
         if not self.checkpoint_dir:

@@ -4,6 +4,9 @@ from torch import nn
 import torch.nn.functional as f
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 class JointEmbedding(nn.Module):
 
     def __init__(self, vocab_size, size):
@@ -18,10 +21,10 @@ class JointEmbedding(nn.Module):
     def forward(self, input_tensor):
         # TODO: apply sin - cos functions as stated in `Attention is all you need`
         sentence_size = input_tensor.size(-1)
-        pos_tensor = torch.arange(sentence_size, dtype=torch.long)
+        pos_tensor = torch.arange(sentence_size, dtype=torch.long).to(device)
         pos_tensor = pos_tensor.expand_as(input_tensor)
 
-        segment_tensor = torch.zeros_like(input_tensor)
+        segment_tensor = torch.zeros_like(input_tensor).to(device)
         segment_tensor[:, sentence_size // 2 + 1:] = 1
 
         output = self.token_emb(input_tensor) + self.segment_emb(segment_tensor) + self.position_emb(pos_tensor)
