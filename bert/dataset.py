@@ -56,7 +56,12 @@ class IMDBBertDataset(Dataset):
 
         inp = torch.Tensor(item[self.MASKED_INDICES_COLUMN]).long()
         mask_target = torch.Tensor(item[self.TARGET_COLUMN]).long()
-        nsp_target = torch.Tensor([item[self.NSP_TARGET_COLUMN]]).long()
+
+        if item[self.NSP_TARGET_COLUMN] == 0:
+            t = [1, 0]
+        else:
+            t = [0, 1]
+        nsp_target = torch.Tensor(t)
 
         attention_mask = (inp == self.vocab[self.PAD]).unsqueeze(0)
 

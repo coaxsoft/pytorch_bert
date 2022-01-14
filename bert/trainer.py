@@ -20,7 +20,7 @@ def percentage(batch_size: int, max_len: int, current: int):
 
 
 def nsp_accuracy(result: torch.Tensor, target: torch.Tensor):
-    s = (result.argmax(1) == target.squeeze(1)).sum()
+    s = (result.argmax(1) == target.argmax(1)).sum()
     return round(float(s / result.size(0)), 2)
 
 
@@ -51,7 +51,7 @@ class BertTrainer:
         self.checkpoint_dir = checkpoint_dir
         self.save_checkpoint_every = save_checkpoint_every
 
-        self.criterion = nn.CrossEntropyLoss().to(device)
+        self.criterion = nn.BCEWithLogitsLoss().to(device)
         self.ml_criterion = nn.NLLLoss(ignore_index=0).to(device)
         self.optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -99,7 +99,7 @@ class BertTrainer:
             token, nsp = self.model(inp, mask)
 
             loss_token = self.ml_criterion(token.transpose(1, 2), mask_target)  # 1D tensor as target is required
-            loss_nsp = self.criterion(nsp, nsp_target.squeeze(1))  # 1D tensor as target is required
+            loss_nsp = self.criterion(nsp, nsp_target)  # 1D tensor as target is required
 
             loss = loss_token + loss_nsp
             average_loss += loss
