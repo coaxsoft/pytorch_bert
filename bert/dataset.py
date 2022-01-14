@@ -11,6 +11,9 @@ from torchtext.vocab import vocab
 from torchtext.data.utils import get_tokenizer
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 class IMDBBertDataset(Dataset):
     CLS = '[CLS]'
     PAD = '[PAD]'
@@ -24,14 +27,17 @@ class IMDBBertDataset(Dataset):
     TARGET_COLUMN = 'indices'
     NSP_TARGET_COLUMN = 'is_next'
 
-    def __init__(self, path, max_length=64, should_include_text=False):
+    def __init__(self, path, max_sentence_length=64, max_ds_length=None, should_include_text=False):
         self.ds: pd.Series = pd.read_csv(path)['review']
+
+        if max_ds_length:
+            self.ds = self.ds[:max_ds_length]
 
         self.tokenizer = get_tokenizer('basic_english')
         self.counter = Counter()
         self.vocab = None
 
-        self.max_length = max_length
+        self.max_sentence_length = max_sentence_length
         self.should_include_text = should_include_text
 
         if should_include_text:
@@ -54,7 +60,7 @@ class IMDBBertDataset(Dataset):
 
         attention_mask = (inp == self.vocab[self.PAD]).unsqueeze(0)
 
-        return inp, attention_mask, mask_target, nsp_target
+        return inp.to(device), attention_mask.to(device), mask_target.to(device), nsp_target.to(device)
 
     def prepare_nsp(self) -> pd.DataFrame:
         sentences = []
@@ -65,15 +71,25 @@ class IMDBBertDataset(Dataset):
             sentences += review_sentences
             max_sentence_len = self._update_max_size(max_sentence_len, review_sentences)
 
-        max_sentence_len = max_sentence_len if max_sentence_len < self.max_length else self.max_length
+        max_sentence_len = max_sentence_len if max_sentence_len < self.max_sentence_length else self.max_sentence_length
         print(f"Biggest sentence len: {max_sentence_len}")
 
         print("Create vocabulary")
         for sentence in tqdm(sentences):
             s = self.tokenizer(sentence)
             self.counter.update(s)
+        self.vocab = vocab(self.counter, min_freq=2)  # specials= is only in 0.12.0 version
 
-        self.vocab = vocab(self.counter, min_freq=1, specials=[self.CLS, self.PAD, self.MASK, self.SEP, self.UNK])
+        # Will not work on M1 such as it uses 0.12.0 version
+        # 0.11.0 uses this approach to insert specials
+        self.vocab.insert_token(self.CLS, 0)
+        self.vocab.insert_token(self.PAD, 1)
+        self.vocab.insert_token(self.MASK, 2)
+        self.vocab.insert_token(self.SEP, 3)
+        self.vocab.insert_token(self.UNK, 4)
+        self.vocab.set_default_index(4)
+
+        # specials=[self.CLS, self.PAD, self.MASK, self.SEP, self.UNK]
 
         print("Preprocessing dataset")
         for review in tqdm(self.ds):
@@ -142,10 +158,10 @@ class IMDBBertDataset(Dataset):
     def _pad_sentence(self, sentence: typing.List[str]):
         len_s = len(sentence)
 
-        if len_s >= self.max_length:
-            s = sentence[:self.max_length]
+        if len_s >= self.max_sentence_length:
+            s = sentence[:self.max_sentence_length]
         else:
-            s = sentence + [self.PAD] * (self.max_length - len_s)
+            s = sentence + [self.PAD] * (self.max_sentence_length - len_s)
         return s
 
     def _preprocess_sentence(self, sentence: typing.List[str], should_mask: bool = True):
