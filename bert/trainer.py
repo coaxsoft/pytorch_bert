@@ -6,6 +6,7 @@ import torch
 
 from torch import nn
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 
 from bert.dataset import IMDBBertDataset
 from bert.model import BERT
@@ -31,6 +32,7 @@ def token_accuracy(result: torch.Tensor, target: torch.Tensor):
 class BertTrainer:
 
     def __init__(self, model: BERT, dataset: IMDBBertDataset,
+                 log_dir: Path,
                  checkpoint_dir: Path = None,
                  save_checkpoint_every: int = 100,
                  print_progress_every: int = 10,
@@ -43,6 +45,8 @@ class BertTrainer:
         self.dataset = dataset
         self.batch_size = batch_size
         self.loader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
+
+        self.writer = SummaryWriter(str(log_dir))
 
         self.checkpoint_dir = checkpoint_dir
         self.save_checkpoint_every = save_checkpoint_every
@@ -85,6 +89,7 @@ class BertTrainer:
         print(f"Begin epoch {epoch}")
 
         prev = time.time()
+        average_loss = 0
         for i, value in enumerate(self.loader):
             index = i + 1
 
@@ -97,6 +102,7 @@ class BertTrainer:
             loss_nsp = self.criterion(nsp, nsp_target.squeeze(1))  # 1D tensor as target is required
 
             loss = loss_token + loss_nsp
+            average_loss += loss
 
             loss.backward()
             self.optimizer.step()
@@ -104,13 +110,23 @@ class BertTrainer:
             if index % self._print_every == 0:
                 elapsed = time.gmtime(time.time() - prev)
                 passed = percentage(self.batch_size, self._ds_len, index)
+                print_loss = average_loss / self._print_every
+                average_loss = 0
+                global_step = epoch * len(self.loader) + index
+
                 s = f"{time.strftime('%H:%M:%S', elapsed)}"
-                s += f" | Epoch {epoch + 1} | {index} / {self._batched_len} ({passed}%) | Loss {loss:6.2f}"
+                s += f" | Epoch {epoch + 1} | {index} / {self._batched_len} ({passed}%) | Loss {print_loss:6.2f}"
 
                 if index % self._accuracy_every == 0:
-                    s += f" | NSP accuracy {nsp_accuracy(nsp, nsp_target)} | " \
-                         f"Token accuracy {token_accuracy(token, mask_target)}"
+                    nsp_acc = nsp_accuracy(nsp, nsp_target)
+                    token_acc = token_accuracy(token, mask_target)
+                    s += f" | NSP accuracy {nsp_acc} | " \
+                         f"Token accuracy {token_acc}"
+                    self.writer.add_scalar("NSP train accuracy", nsp_acc, global_step=global_step)
+                    self.writer.add_scalar("Token train accuracy", token_acc, global_step=global_step)
                 print(s)
+
+                self.writer.add_scalar("Train loss", print_loss, global_step=global_step)
 
             if index % self.save_checkpoint_every == 0:
                 self.save_checkpoint(epoch, index, loss)
