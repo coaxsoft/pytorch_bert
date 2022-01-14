@@ -12,23 +12,42 @@ class JointEmbedding(nn.Module):
     def __init__(self, vocab_size, size):
         super(JointEmbedding, self).__init__()
 
+        self.size = size
+
         self.token_emb = nn.Embedding(vocab_size, size)
         self.segment_emb = nn.Embedding(vocab_size, size)
-        self.position_emb = nn.Embedding(vocab_size, size)
 
         self.norm = nn.LayerNorm(size)
 
     def forward(self, input_tensor):
-        # TODO: apply sin - cos functions as stated in `Attention is all you need`
         sentence_size = input_tensor.size(-1)
-        pos_tensor = torch.arange(sentence_size, dtype=torch.long).to(device)
-        pos_tensor = pos_tensor.expand_as(input_tensor)
+        pos_tensor = self.attention_position(self.size, input_tensor)
 
         segment_tensor = torch.zeros_like(input_tensor).to(device)
         segment_tensor[:, sentence_size // 2 + 1:] = 1
 
-        output = self.token_emb(input_tensor) + self.segment_emb(segment_tensor) + self.position_emb(pos_tensor)
+        output = self.token_emb(input_tensor) + self.segment_emb(segment_tensor) + pos_tensor
         return self.norm(output)
+
+    def attention_position(self, dim, input_tensor):
+        batch_size = input_tensor.size(0)
+        sentence_size = input_tensor.size(-1)
+
+        pos = torch.arange(sentence_size, dtype=torch.long).to(device)
+        d = torch.arange(dim, dtype=torch.long).to(device)
+        d = (2 * d / dim)
+
+        pos = pos.unsqueeze(1)
+        pos = pos / (1e4 ** d)
+
+        pos[:, ::2] = torch.sin(pos[:, ::2])
+        pos[:, 1::2] = torch.cos(pos[:, 1::2])
+
+        return pos.expand(batch_size, *pos.size())
+
+    def numeric_position(self, dim, input_tensor):
+        pos_tensor = torch.arange(dim, dtype=torch.long).to(device)
+        return pos_tensor.expand_as(input_tensor)
 
 
 class AttentionHead(nn.Module):
