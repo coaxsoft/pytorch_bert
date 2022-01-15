@@ -4,8 +4,6 @@ import torch
 
 from pathlib import Path
 
-from torch.utils.data import DataLoader
-
 from bert.dataset import IMDBBertDataset
 from bert.model import BERT
 from bert.trainer import BertTrainer
@@ -13,8 +11,9 @@ from bert.trainer import BertTrainer
 BASE_DIR = Path(__file__).resolve().parent
 
 EMB_SIZE = 64
+HIDDEN_SIZE = 36
 EPOCHS = 4
-BATCH_SIZE = 8
+BATCH_SIZE = 12
 NUM_HEADS = 4
 
 CHECKPOINT_DIR = BASE_DIR.joinpath('data/bert_checkpoints')
@@ -28,21 +27,20 @@ if torch.cuda.is_available():
     torch.cuda.empty_cache()
 
 if __name__ == '__main__':
-    ds = IMDBBertDataset(BASE_DIR.joinpath('data/imdb.csv'), max_sentence_length=64, max_ds_length=1000)
-    dl = DataLoader(ds, batch_size=BATCH_SIZE, shuffle=True)
+    print("Prepare dataset")
+    ds = IMDBBertDataset(BASE_DIR.joinpath('data/imdb.csv'), ds_from=0, ds_to=50000)
 
-    bert = BERT(len(ds.vocab), EMB_SIZE, 24, NUM_HEADS).to(device)
+    bert = BERT(len(ds.vocab), EMB_SIZE, HIDDEN_SIZE, NUM_HEADS).to(device)
     trainer = BertTrainer(
         model=bert,
         dataset=ds,
         log_dir=LOG_DIR,
         checkpoint_dir=CHECKPOINT_DIR,
-        save_checkpoint_every=500,
         print_progress_every=20,
-        print_accuracy_every=50,
+        print_accuracy_every=200,
         batch_size=BATCH_SIZE,
-        learning_rate=0.005,
-        epochs=5
+        learning_rate=0.00007,
+        epochs=15
     )
 
     trainer.print_summary()

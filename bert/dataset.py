@@ -2,6 +2,7 @@ import random
 import typing
 from collections import Counter
 
+import numpy as np
 import pandas as pd
 import torch
 
@@ -26,25 +27,33 @@ class IMDBBertDataset(Dataset):
     MASKED_INDICES_COLUMN = 'masked_indices'
     TARGET_COLUMN = 'indices'
     NSP_TARGET_COLUMN = 'is_next'
+    TOKEN_MASK_COLUMN = 'token_mask'
 
-    def __init__(self, path, max_sentence_length=64, max_ds_length=None, should_include_text=False):
+    OPTIMAL_PERCENTILE = 70
+
+    def __init__(self, path, ds_from=None, ds_to=None, strict_max_len=None,
+                 should_include_text=False):
         self.ds: pd.Series = pd.read_csv(path)['review']
 
-        if max_ds_length:
-            self.ds = self.ds[:max_ds_length]
+        if ds_from is not None and ds_to is not None:
+            self.ds = self.ds[ds_from:ds_to]
 
         self.tokenizer = get_tokenizer('basic_english')
         self.counter = Counter()
         self.vocab = None
 
-        self.max_sentence_length = max_sentence_length
+        self.strict_max_len = strict_max_len
+        self.optimal_sentence_length = None
+
         self.should_include_text = should_include_text
 
         if should_include_text:
             self.columns = ['masked_sentence', self.MASKED_INDICES_COLUMN, 'sentence', self.TARGET_COLUMN,
+                            self.TOKEN_MASK_COLUMN,
                             self.NSP_TARGET_COLUMN]
         else:
-            self.columns = [self.MASKED_INDICES_COLUMN, self.TARGET_COLUMN, self.NSP_TARGET_COLUMN]
+            self.columns = [self.MASKED_INDICES_COLUMN, self.TARGET_COLUMN, self.TOKEN_MASK_COLUMN,
+                            self.NSP_TARGET_COLUMN]
 
         self.df = self.prepare_nsp()
 
@@ -55,29 +64,38 @@ class IMDBBertDataset(Dataset):
         item = self.df.iloc[idx]
 
         inp = torch.Tensor(item[self.MASKED_INDICES_COLUMN]).long()
+        token_mask = torch.Tensor(item[self.TOKEN_MASK_COLUMN]).bool()
+
         mask_target = torch.Tensor(item[self.TARGET_COLUMN]).long()
+        mask_target = mask_target.masked_fill_(token_mask, 0)
 
         if item[self.NSP_TARGET_COLUMN] == 0:
             t = [1, 0]
         else:
             t = [0, 1]
+
         nsp_target = torch.Tensor(t)
 
         attention_mask = (inp == self.vocab[self.PAD]).unsqueeze(0)
 
-        return inp.to(device), attention_mask.to(device), mask_target.to(device), nsp_target.to(device)
+        return inp.to(device), attention_mask.to(device), token_mask.to(device), mask_target.to(device), \
+               nsp_target.to(device)
 
     def prepare_nsp(self) -> pd.DataFrame:
         sentences = []
         nsp = []
         max_sentence_len = 0
+        sentence_lens = []
         for review in self.ds:
             review_sentences = review.split('. ')
             sentences += review_sentences
-            max_sentence_len = self._update_max_size(max_sentence_len, review_sentences)
+            max_sentence_len = self._update_length(max_sentence_len, review_sentences, sentence_lens)
 
-        max_sentence_len = max_sentence_len if max_sentence_len < self.max_sentence_length else self.max_sentence_length
-        print(f"Biggest sentence len: {max_sentence_len}")
+        if self.strict_max_len:
+            self.optimal_sentence_length = self.strict_max_len
+        else:
+            self.optimal_sentence_length = self._find_optimal_sentence_length(sentence_lens)
+        print(f"Optimal sentence len: {self.optimal_sentence_length}")
 
         print("Create vocabulary")
         for sentence in tqdm(sentences):
@@ -111,28 +129,37 @@ class IMDBBertDataset(Dataset):
         df = pd.DataFrame(nsp, columns=self.columns)
         return df
 
+    def validation_tensor(self):
+        pass
+
     def _create_nsp_item(self, first: typing.List[str], second: typing.List[str], target: int = 1):
-        updated_first = self._preprocess_sentence(first.copy())
-        updated_second = self._preprocess_sentence(second.copy())
+        updated_first, first_mask = self._preprocess_sentence(first.copy())
+        updated_second, second_mask = self._preprocess_sentence(second.copy())
         true_nsp_sentence = updated_first + [self.SEP] + updated_second
         true_nsp_indices = self.vocab.lookup_indices(true_nsp_sentence)
+        token_mask = first_mask + [True] + second_mask
 
-        first = self._preprocess_sentence(first.copy(), should_mask=False)
-        second = self._preprocess_sentence(second.copy(), should_mask=False)
+        first, _ = self._preprocess_sentence(first.copy(), should_mask=False)
+        second, _ = self._preprocess_sentence(second.copy(), should_mask=False)
         original_nsp_sentence = first + [self.SEP] + second
         original_nsp_indices = self.vocab.lookup_indices(original_nsp_sentence)
 
         if self.should_include_text:
-            return true_nsp_sentence, true_nsp_indices, original_nsp_sentence, original_nsp_indices, target
+            return true_nsp_sentence, true_nsp_indices, original_nsp_sentence, original_nsp_indices, token_mask, target
         else:
-            return true_nsp_indices, original_nsp_indices, target
+            return true_nsp_indices, original_nsp_indices, token_mask, target
 
-    def _update_max_size(self, size: int, sentences: typing.List[str]):
+    def _update_length(self, size: int, sentences: typing.List[str], lengths: typing.List[int]):
         for v in sentences:
             l = len(v.split())
             if l > size:
                 size = l
+            lengths.append(l)
         return size
+
+    def _find_optimal_sentence_length(self, lengths: typing.List[int]):
+        arr = np.array(lengths)
+        return int(np.percentile(arr, self.OPTIMAL_PERCENTILE))
 
     def _gen_false_nsp(self, sentences: typing.List[str]):
         sentences_len = len(sentences)
@@ -147,6 +174,7 @@ class IMDBBertDataset(Dataset):
 
     def _mask_sentence(self, sentence: typing.List[str]):
         len_s = len(sentence)
+        mask = [True for _ in range(max(len_s, self.optimal_sentence_length))]
 
         mask_amount = round(len_s * self.MASK_PERCENTAGE)
         for _ in range(mask_amount):
@@ -158,23 +186,32 @@ class IMDBBertDataset(Dataset):
                 # All is below 5 is special token
                 j = random.randint(5, len(self.vocab) - 1)
                 sentence[i] = self.vocab.lookup_token(j)
-        return sentence
+            mask[i] = False
+        return sentence, mask
 
-    def _pad_sentence(self, sentence: typing.List[str]):
+    def _pad_sentence(self, sentence: typing.List[str], mask: typing.List[bool] = None):
         len_s = len(sentence)
 
-        if len_s >= self.max_sentence_length:
-            s = sentence[:self.max_sentence_length]
+        if len_s >= self.optimal_sentence_length:
+            s = sentence[:self.optimal_sentence_length]
         else:
-            s = sentence + [self.PAD] * (self.max_sentence_length - len_s)
-        return s
+            s = sentence + [self.PAD] * (self.optimal_sentence_length - len_s)
+
+        if mask:
+            len_m = len(mask)
+            if len_m >= self.optimal_sentence_length:
+                mask = mask[:self.optimal_sentence_length]
+            else:
+                mask = mask + [True] * (self.optimal_sentence_length - len_m)
+        return s, mask
 
     def _preprocess_sentence(self, sentence: typing.List[str], should_mask: bool = True):
+        mask = None
         if should_mask:
-            sentence = self._mask_sentence(sentence)
-        sentence = self._pad_sentence([self.CLS] + sentence)
+            sentence, mask = self._mask_sentence(sentence)
+        sentence, mask = self._pad_sentence([self.CLS] + sentence, mask)
 
-        return sentence
+        return sentence, mask
 
 
 if __name__ == '__main__':
