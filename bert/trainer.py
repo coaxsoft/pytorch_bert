@@ -14,19 +14,48 @@ from bert.model import BERT
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def percentage(batch_size: int, max_len: int, current: int):
-    batched_max = max_len // batch_size
-    return round(current / batched_max * 100, 2)
+def percentage(batch_size: int, max_index: int, current_index: int):
+    """Calculate epoch progress percentage
+
+    Args:
+        batch_size: batch size
+        max_index: max index in epoch
+        current_index: current index
+
+    Returns:
+        Passed percentage of dataset
+    """
+    batched_max = max_index // batch_size
+    return round(current_index / batched_max * 100, 2)
 
 
 def nsp_accuracy(result: torch.Tensor, target: torch.Tensor):
+    """Calculate NSP accuracy between two tensors
+
+    Args:
+        result: result calculated by model
+        target: real target
+
+    Returns:
+        NSP accuracy
+    """
     s = (result.argmax(1) == target.argmax(1)).sum()
     return round(float(s / result.size(0)), 2)
 
 
-def token_accuracy(result: torch.Tensor, target: torch.Tensor, mask: torch.Tensor):
-    r = result.argmax(-1).masked_select(~mask)
-    t = target.masked_select(~mask)
+def token_accuracy(result: torch.Tensor, target: torch.Tensor, inverse_token_mask: torch.Tensor):
+    """Calculate MLM accuracy between ONLY masked words
+
+    Args:
+        result: result calculated by model
+        target: real target
+        inverse_token_mask: well-known inverse token mask
+
+    Returns:
+        MLM accuracy
+    """
+    r = result.argmax(-1).masked_select(~inverse_token_mask)
+    t = target.masked_select(~inverse_token_mask)
     s = (r == t).sum()
     return round(float(s / (result.size(0) * result.size(1))), 2)
 
