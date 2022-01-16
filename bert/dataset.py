@@ -246,5 +246,7 @@ class IMDBBertDataset(Dataset):
 
 
 if __name__ == '__main__':
-    ds = IMDBBertDataset('/Users/mikhail/PycharmProjects/rnn_pytorch/data/imdb.csv')
-    dl = DataLoader(ds, batch_size=64, shuffle=True)
+    ds = IMDBBertDataset('/Users/mikhail/PycharmProjects/rnn_pytorch/data/imdb.csv', ds_from=0, ds_to=500,
+                         should_include_text=True)
+    print(ds.df)
+
