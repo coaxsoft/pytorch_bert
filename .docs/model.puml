@@ -35,8 +35,8 @@ class Encoder {
 }
 
 JointEmbedding -* BERT
-Encoder -down-* BERT
-AttentionHead --* MultiHeadAttention
+Encoder -left-* BERT
+AttentionHead -left-* MultiHeadAttention
 MultiHeadAttention --* Encoder
 
 @enduml
