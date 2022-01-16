@@ -7,7 +7,7 @@ import pandas as pd
 import torch
 
 from tqdm import tqdm
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from torchtext.vocab import vocab
 from torchtext.data.utils import get_tokenizer
 
@@ -66,14 +66,14 @@ class IMDBBertDataset(Dataset):
         mask_target = torch.Tensor(item[self.TARGET_COLUMN]).long()
         mask_target = mask_target.masked_fill_(token_mask, 0)
 
+        attention_mask = (inp == self.vocab[self.PAD]).unsqueeze(0)
+
         if item[self.NSP_TARGET_COLUMN] == 0:
             t = [1, 0]
         else:
             t = [0, 1]
 
         nsp_target = torch.Tensor(t)
-
-        attention_mask = (inp == self.vocab[self.PAD]).unsqueeze(0)
 
         return (
             inp.to(device),
@@ -100,7 +100,7 @@ class IMDBBertDataset(Dataset):
             s = self.tokenizer(sentence)
             self.counter.update(s)
 
-        self._insert_specials()
+        self._fill_vocab()
 
         print("Preprocessing dataset")
         for review in tqdm(self.ds):
@@ -128,7 +128,7 @@ class IMDBBertDataset(Dataset):
         arr = np.array(lengths)
         return int(np.percentile(arr, self.OPTIMAL_LENGTH_PERCENTILE))
 
-    def _insert_specials(self):
+    def _fill_vocab(self):
         # specials= argument is only in 0.12.0 version
         # specials=[self.CLS, self.PAD, self.MASK, self.SEP, self.UNK]
         self.vocab = vocab(self.counter, min_freq=2)
@@ -146,8 +146,8 @@ class IMDBBertDataset(Dataset):
         updated_first, first_mask = self._preprocess_sentence(first.copy())
         updated_second, second_mask = self._preprocess_sentence(second.copy())
 
-        true_nsp_sentence = updated_first + [self.SEP] + updated_second
-        true_nsp_indices = self.vocab.lookup_indices(true_nsp_sentence)
+        nsp_sentence = updated_first + [self.SEP] + updated_second
+        nsp_indices = self.vocab.lookup_indices(nsp_sentence)
         inverse_token_mask = first_mask + [True] + second_mask
 
         # Create sentence item without masking random words
@@ -158,8 +158,8 @@ class IMDBBertDataset(Dataset):
 
         if self.should_include_text:
             return (
-                true_nsp_sentence,
-                true_nsp_indices,
+                nsp_sentence,
+                nsp_indices,
                 original_nsp_sentence,
                 original_nsp_indices,
                 inverse_token_mask,
@@ -167,7 +167,7 @@ class IMDBBertDataset(Dataset):
             )
         else:
             return (
-                true_nsp_indices,
+                nsp_indices,
                 original_nsp_indices,
                 inverse_token_mask,
                 target

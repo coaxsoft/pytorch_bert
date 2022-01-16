@@ -1,0 +1,42 @@
+@startuml
+
+!theme cerulean-outline
+
+skinparam backgroundColor white
+
+title "pyTorch BERT model"
+
+class BERT {
+    The main class of our model.
+    It unites all the sub-models
+    ..
+}
+
+class JointEmbedding {
+    Container for embeddings.
+    The first layer in the model
+    ..
+}
+
+class AttentionHead {
+    Attention model
+    ..
+}
+
+class MultiHeadAttention {
+    Container for attention heads
+    ..
+}
+
+class Encoder {
+    Pass embeddings through attention
+    and feed-forward neural network
+    ..
+}
+
+JointEmbedding -* BERT
+Encoder -down-* BERT
+AttentionHead --* MultiHeadAttention
+MultiHeadAttention --* Encoder
+
+@enduml

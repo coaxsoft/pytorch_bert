@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="634.375px" preserveAspectRatio="none" style="width:441px;height:634px;background:#FFFFFF;" version="1.1" viewBox="0 0 441 634" width="441.6667px" zoomAndPan="magnify"><defs/><g><rect fill="#FFFFFF" height="47.4528" rx="4.1667" ry="4.1667" style="stroke:#BABDBF;stroke-width:1.0416666666666667;" width="247.9167" x="92.4479" y="20.8333"/><text fill="#2FA4E7" font-family="&quot;Verdana&quot;" font-size="20.8333" font-weight="bold" lengthAdjust="spacing" textLength="225" x="103.9063" y="52.4333">pyTorch BERT model</text><!--MD5=[237ba558d08faa138de965e69c6389ac]
+class BERT--><rect codeLine="8" height="98.818" id="BERT" rx="4.1667" ry="4.1667" style="stroke:#2FA4E7;stroke-width:1.0416666666666667;fill:none;" width="183.3333" x="227.0833" y="523.4945"/><ellipse cx="295.8333" cy="540.6586" fill="#EDF0F2" rx="10.4167" ry="10.4167" style="stroke:#BABDBF;stroke-width:1.0416666666666667;"/><path d="M297.7437,545.0836 Q297.3165,545.3033 296.8465,545.4132 Q296.3765,545.5231 295.8577,545.5231 Q294.0145,545.5231 293.044,544.3085 Q292.0736,543.0939 292.0736,540.799 Q292.0736,538.4979 293.044,537.2833 Q294.0145,536.0687 295.8577,536.0687 Q296.3765,536.0687 296.8526,536.1786 Q297.3287,536.2885 297.7437,536.5082 L297.7437,538.5101 Q297.2799,538.0829 296.8435,537.8845 Q296.4071,537.6862 295.9432,537.6862 Q294.9544,537.6862 294.4509,538.4705 Q293.9473,539.2548 293.9473,540.799 Q293.9473,542.337 294.4509,543.1213 Q294.9544,543.9056 295.9432,543.9056 Q296.4071,543.9056 296.8435,543.7073 Q297.2799,543.5089 297.7437,543.0817 Z " fill="#000000"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="27.0833" x="320.8333" y="544.989">BERT</text><line style="stroke:#2FA4E7;stroke-width:1.5625;" x1="228.125" x2="409.375" y1="557.8227" y2="557.8227"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="160.4167" x="238.5417" y="578.2756">The main class of our model.</text><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="152.0833" x="238.5417" y="602.1871">It unites all the sub-models</text><line style="stroke:#2FA4E7;stroke-width:1.0416666666666667;stroke-dasharray:1.0,2.0;" x1="228.125" x2="409.375" y1="613.9791" y2="613.9791"/><!--MD5=[fbf56e476b2db8099687329a0aa02670]
+class JointEmbedding--><rect codeLine="14" height="98.818" id="JointEmbedding" rx="4.1667" ry="4.1667" style="stroke:#2FA4E7;stroke-width:1.0416666666666667;fill:none;" width="172.9167" x="17.7083" y="523.4945"/><ellipse cx="51.9792" cy="540.6586" fill="#EDF0F2" rx="10.4167" ry="10.4167" style="stroke:#BABDBF;stroke-width:1.0416666666666667;"/><path d="M53.8896,545.0836 Q53.4623,545.3033 52.9924,545.4132 Q52.5224,545.5231 52.0036,545.5231 Q50.1603,545.5231 49.1899,544.3085 Q48.2194,543.0939 48.2194,540.799 Q48.2194,538.4979 49.1899,537.2833 Q50.1603,536.0687 52.0036,536.0687 Q52.5224,536.0687 52.9985,536.1786 Q53.4745,536.2885 53.8896,536.5082 L53.8896,538.5101 Q53.4257,538.0829 52.9893,537.8845 Q52.5529,537.6862 52.089,537.6862 Q51.1003,537.6862 50.5967,538.4705 Q50.0932,539.2548 50.0932,540.799 Q50.0932,542.337 50.5967,543.1213 Q51.1003,543.9056 52.089,543.9056 Q52.5529,543.9056 52.9893,543.7073 Q53.4257,543.5089 53.8896,543.0817 Z " fill="#000000"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="87.5" x="75.1042" y="544.989">JointEmbedding</text><line style="stroke:#2FA4E7;stroke-width:1.5625;" x1="18.75" x2="189.5833" y1="557.8227" y2="557.8227"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="150" x="29.1667" y="578.2756">Container for embeddings.</text><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="148.9583" x="29.1667" y="602.1871">The first layer in the model</text><line style="stroke:#2FA4E7;stroke-width:1.0416666666666667;stroke-dasharray:1.0,2.0;" x1="18.75" x2="189.5833" y1="613.9791" y2="613.9791"/><!--MD5=[c89bce1751c4b5ecd004b0f05df73a1b]
+class AttentionHead--><rect codeLine="20" height="74.9064" id="AttentionHead" rx="4.1667" ry="4.1667" style="stroke:#2FA4E7;stroke-width:1.0416666666666667;fill:none;" width="121.875" x="257.8125" y="87.0361"/><ellipse cx="272.3958" cy="104.2002" fill="#EDF0F2" rx="10.4167" ry="10.4167" style="stroke:#BABDBF;stroke-width:1.0416666666666667;"/><path d="M274.3062,108.6253 Q273.879,108.845 273.409,108.9549 Q272.939,109.0647 272.4202,109.0647 Q270.577,109.0647 269.6065,107.8501 Q268.6361,106.6355 268.6361,104.3406 Q268.6361,102.0396 269.6065,100.825 Q270.577,99.6104 272.4202,99.6104 Q272.939,99.6104 273.4151,99.7203 Q273.8912,99.8301 274.3062,100.0498 L274.3062,102.0518 Q273.8424,101.6246 273.406,101.4262 Q272.9696,101.2278 272.5057,101.2278 Q271.5169,101.2278 271.0134,102.0121 Q270.5098,102.7964 270.5098,104.3406 Q270.5098,105.8787 271.0134,106.663 Q271.5169,107.4473 272.5057,107.4473 Q272.9696,107.4473 273.406,107.2489 Q273.8424,107.0506 274.3062,106.6233 Z " fill="#000000"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="80.2083" x="291.1458" y="108.5307">AttentionHead</text><line style="stroke:#2FA4E7;stroke-width:1.5625;" x1="258.8542" x2="378.6458" y1="121.3643" y2="121.3643"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="89.5833" x="269.2708" y="141.8172">Attention model</text><line style="stroke:#2FA4E7;stroke-width:1.0416666666666667;stroke-dasharray:1.0,2.0;" x1="258.8542" x2="378.6458" y1="153.6092" y2="153.6092"/><!--MD5=[be737e263ef2209458fc7eb05fd7cddd]
+class MultiHeadAttention--><rect codeLine="25" height="74.9064" id="MultiHeadAttention" rx="4.1667" ry="4.1667" style="stroke:#2FA4E7;stroke-width:1.0416666666666667;fill:none;" width="187.5" x="225" y="224.5361"/><ellipse cx="256.9271" cy="241.7002" fill="#EDF0F2" rx="10.4167" ry="10.4167" style="stroke:#BABDBF;stroke-width:1.0416666666666667;"/><path d="M258.8375,246.1253 Q258.4102,246.345 257.9403,246.4549 Q257.4703,246.5647 256.9515,246.5647 Q255.1082,246.5647 254.1378,245.3501 Q253.1673,244.1355 253.1673,241.8406 Q253.1673,239.5396 254.1378,238.325 Q255.1082,237.1104 256.9515,237.1104 Q257.4703,237.1104 257.9464,237.2203 Q258.4224,237.3301 258.8375,237.5498 L258.8375,239.5518 Q258.3736,239.1246 257.9372,238.9262 Q257.5008,238.7278 257.0369,238.7278 Q256.0482,238.7278 255.5446,239.5121 Q255.0411,240.2964 255.0411,241.8406 Q255.0411,243.3787 255.5446,244.163 Q256.0482,244.9473 257.0369,244.9473 Q257.5008,244.9473 257.9372,244.7489 Q258.3736,244.5506 258.8375,244.1233 Z " fill="#000000"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="107.2917" x="279.5313" y="246.0307">MultiHeadAttention</text><line style="stroke:#2FA4E7;stroke-width:1.5625;" x1="226.0417" x2="411.4583" y1="258.8643" y2="258.8643"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="164.5833" x="236.4583" y="279.3172">Container for attention heads</text><line style="stroke:#2FA4E7;stroke-width:1.0416666666666667;stroke-dasharray:1.0,2.0;" x1="226.0417" x2="411.4583" y1="291.1092" y2="291.1092"/><!--MD5=[a6c6c764ef525f81bbc9f42f79e225a1]
+class Encoder--><rect codeLine="30" height="98.818" id="Encoder" rx="4.1667" ry="4.1667" style="stroke:#2FA4E7;stroke-width:1.0416666666666667;fill:none;" width="221.875" x="207.8125" y="362.0361"/><ellipse cx="286.4583" cy="379.2002" fill="#EDF0F2" rx="10.4167" ry="10.4167" style="stroke:#BABDBF;stroke-width:1.0416666666666667;"/><path d="M288.3687,383.6253 Q287.9415,383.845 287.4715,383.9549 Q287.0015,384.0647 286.4827,384.0647 Q284.6395,384.0647 283.669,382.8501 Q282.6986,381.6355 282.6986,379.3406 Q282.6986,377.0396 283.669,375.825 Q284.6395,374.6104 286.4827,374.6104 Q287.0015,374.6104 287.4776,374.7203 Q287.9537,374.8301 288.3687,375.0498 L288.3687,377.0518 Q287.9049,376.6246 287.4685,376.4262 Q287.0321,376.2278 286.5682,376.2278 Q285.5794,376.2278 285.0759,377.0121 Q284.5723,377.7964 284.5723,379.3406 Q284.5723,380.8787 285.0759,381.663 Q285.5794,382.4473 286.5682,382.4473 Q287.0321,382.4473 287.4685,382.2489 Q287.9049,382.0506 288.3687,381.6233 Z " fill="#000000"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="45.8333" x="311.4583" y="383.5307">Encoder</text><line style="stroke:#2FA4E7;stroke-width:1.5625;" x1="208.8542" x2="428.6458" y1="396.3643" y2="396.3643"/><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="198.9583" x="219.2708" y="416.8172">Pass embeddings through attention</text><text fill="#343A40" font-family="&quot;Verdana&quot;" font-size="11.4583" lengthAdjust="spacing" textLength="184.375" x="219.2708" y="440.7288">and feed-forward neural network</text><line style="stroke:#2FA4E7;stroke-width:1.0416666666666667;stroke-dasharray:1.0,2.0;" x1="208.8542" x2="428.6458" y1="452.5208" y2="452.5208"/><!--MD5=[605f299657df16489aa0a5cec6d987bf]
+link JointEmbedding to BERT--><path codeLine="36" d="M190.9271,572.9736 C198.3229,572.9736 205.7188,572.9736 213.1146,572.9736 " fill="none" id="JointEmbedding-to-BERT" style="stroke:#2FA4E7;stroke-width:3.125;"/><polygon fill="#2FA4E7" points="226.875,572.9736,220.625,568.807,214.375,572.9736,220.625,577.1403,226.875,572.9736" style="stroke:#2FA4E7;stroke-width:3.125;"/><!--MD5=[bc8b425aa66b1199def3b1f618707c00]
+link Encoder to BERT--><path codeLine="37" d="M318.75,461.2445 C318.75,476.4632 318.75,493.4736 318.75,509.5049 " fill="none" id="Encoder-to-BERT" style="stroke:#2FA4E7;stroke-width:3.125;"/><polygon fill="#2FA4E7" points="318.75,523.2757,322.9167,517.0257,318.75,510.7757,314.5833,517.0257,318.75,523.2757" style="stroke:#2FA4E7;stroke-width:3.125;"/><!--MD5=[f26495e3b967df812cb5622c79d6ade2]
+link AttentionHead to MultiHeadAttention--><path codeLine="38" d="M318.75,162.2236 C318.75,177.1299 318.75,194.5882 318.75,210.6611 " fill="none" id="AttentionHead-to-MultiHeadAttention" style="stroke:#2FA4E7;stroke-width:3.125;"/><polygon fill="#2FA4E7" points="318.75,224.3174,322.9167,218.0674,318.75,211.8174,314.5833,218.0674,318.75,224.3174" style="stroke:#2FA4E7;stroke-width:3.125;"/><!--MD5=[8461b4cacc4e8830453778f65dec0a37]
+link MultiHeadAttention to Encoder--><path codeLine="39" d="M318.75,299.8903 C318.75,314.5465 318.75,331.8278 318.75,348.3174 " fill="none" id="MultiHeadAttention-to-Encoder" style="stroke:#2FA4E7;stroke-width:3.125;"/><polygon fill="#2FA4E7" points="318.75,361.9007,322.9167,355.6507,318.75,349.4007,314.5833,355.6507,318.75,361.9007" style="stroke:#2FA4E7;stroke-width:3.125;"/><!--MD5=[69bb7190fee85acd7f550ab45d3689b0]
+@startuml
+
+!theme cerulean-outline
+
+skinparam backgroundColor white
+
+title "pyTorch BERT model"
+
+class BERT {
+    The main class of our model.
+    It unites all the sub-models
+    ..
+}
+
+class JointEmbedding {
+    Container for embeddings.
+    The first layer in the model
+    ..
+}
+
+class AttentionHead {
+    Attention model
+    ..
+}
+
+class MultiHeadAttention {
+    Container for attention heads
+    ..
+}
+
+class Encoder {
+    Pass embeddings through attention
+    and feed-forward neural network
+    ..
+}
+
+JointEmbedding -* BERT
+Encoder -down-* BERT
+AttentionHead - -* MultiHeadAttention
+MultiHeadAttention - -* Encoder
+
+@enduml
+
+@startuml
+
+
+
+
+skinparam backgroundColor transparent
+skinparam useBetaStyle false
+
+
+
+
+
+
+<style>
+  root {
+    BackgroundColor transparent
+    FontColor #2FA4E7
+    HyperLinkColor #FD7E14
+    LineColor #2683B9
+    LineThickness 1
+    Margin 10
+    Padding 6
+    Shadowing 0.0
+  }
+  node {
+   Padding 15
+   roundcorner 20
+   BackgroundColor transparent
+  }
+  caption {
+    LineThickness 0
+  }
+  footer {
+    LineThickness 0
+  }
+  groupHeader {
+    BackgroundColor #E9ECEF
+    FontColor #033C73
+    FontStyle bold
+  }
+  header {
+    LineThickness 0
+  }
+  referenceHeader {
+    BackgroundColor transparent
+    FontColor #343A40
+    FontStyle bold
+  }
+  separator {
+    BackgroundColor #343A40
+    FontColor transparent
+    FontStyle bold
+  }
+  title {
+	FontSize 20
+	BorderRoundCorner            8
+	BorderThickness 	         1
+	BackgroundColor  transparent
+	FontColor #2FA4E7
+	BorderColor #E9ECEF
+  }
+  nwdiagDiagram {
+	network {
+			FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent    
+		LineColor #2FA4E7
+		LineThickness 1.0
+		FontColor #2683B9
+	}
+	server {
+			FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	}
+	arrow {
+		FontColor #2683B9
+		LineColor #2683B9
+	}
+	group {
+		BackGroundColor #F8F9FA
+		LineColor $LIGHT_DARK
+		LineThickness 2.0
+		Margin 5
+		Padding 5
+	}
+  }
+  ganttDiagram {
+	task {
+			FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+		LineColor #2FA4E7
+		Margin 10
+		Padding 6
+	}
+	note {
+		FontColor #033C73
+		LineColor $INFO_DARK
+		BackGroundColor transparent
+	}
+	separator {
+		LineColor #BABDBF
+		BackGroundColor transparent
+		FontColor #BABDBF
+	}
+	milestone {
+		FontColor #033C73
+		FontSize 16
+		FontStyle italic
+		BackGroundColor #E9ECEF
+		LineColor #BABDBF
+	}
+	timeline {
+		BackgroundColor #E9ECEF
+		FontColor #BABDBF
+	}
+	closed {
+		BackgroundColor $WARNING_DARK
+		FontColor #DD5600
+	}
+  }
+</style>
+skinparam defaultFontName       "Verdana"
+skinparam defaultFontSize       12
+skinparam dpi                   100
+skinparam shadowing             false
+skinparam roundcorner           8
+skinparam ParticipantPadding    40
+skinparam BoxPadding            40
+skinparam Padding               5
+skinparam ArrowColor            #868E96
+skinparam stereotype {
+    CBackgroundColor #EDF0F2
+    CBorderColor #BABDBF
+    ABackgroundColor #8FB961
+    ABorderColor $SUCCESS_DARK
+    IBackgroundColor #D2494E
+    IBorderColor $DANGER_DARK
+    EBackgroundColor #E47833
+    EBorderColor $WARNING_DARK
+    NBackgroundColor #35638F
+    NBorderColor $INFO_DARK
+}
+skinparam title {
+	FontColor	                 #2FA4E7
+	BorderColor	                 #BABDBF
+	FontSize	    	         20
+	BorderRoundCorner            8
+	BorderThickness 	         1
+	BackgroundColor              transparent
+}
+
+skinparam legend {
+	BackgroundColor transparent
+	BorderColor #BABDBF
+	FontColor #343A40
+}
+
+skinparam swimlane {
+	BorderColor #033C73
+	BorderThickness 2
+	TitleBackgroundColor  #EDF0F2-#E9ECEF
+	TitleFontColor #2FA4E7
+}
+
+
+skinparam activity {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	BarColor #73A839
+	StartColor #033C73
+	EndColor #033C73
+	DiamondBackgroundColor transparent
+  	DiamondBorderColor #BABDBF
+	DiamondFontColor #BABDBF
+}
+
+
+skinparam participant {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	ParticipantBorderThickness 2
+}
+
+
+skinparam actor {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam arrow {
+	Thickness 3
+	Color #2FA4E7
+	FontColor #343A40
+}
+
+
+skinparam sequence {
+	BorderColor #2FA4E7
+	TitleFontColor #2FA4E7
+	BackgroundColor transparent
+	StartColor #2FA4E7
+	EndColor #2FA4E7
+	BoxBackgroundColor transparent
+	BoxBorderColor #868E96
+	BoxFontColor #343A40
+	DelayFontColor #343A40
+	LifeLineBorderColor #BABDBF
+	LifeLineBorderThickness 2
+	LifeLineBackgroundColor transparent
+	GroupBorderColor #868E96
+	GroupFontColor #343A40
+	GroupHeaderFontColor #033C73
+	DividerBackgroundColor transparent
+    DividerBorderColor #868E96
+    DividerBorderThickness 2
+    DividerFontColor #343A40
+	ReferenceBackgroundColor transparent
+	ReferenceBorderColor #868E96
+	ReferenceFontColor #343A40
+	ReferenceHeaderFontColor #033C73
+	StereotypeFontColor #2FA4E7
+}
+
+
+skinparam partition {
+	BorderColor #2FA4E7
+	FontColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam collections {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam control {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam entity {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam boundary {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam agent {
+	BackgroundColor transparent
+	BorderColor #999999
+	FontColor #333333
+}
+
+
+skinparam note {
+	BorderThickness 1
+	BackgroundColor transparent
+	BorderColor #033C73
+	FontColor #033C73
+}
+
+
+skinparam artifact {
+	BackgroundColor transparent
+	BorderColor #868E96
+	FontColor #868E96
+}
+
+
+skinparam component {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam interface {
+	BackgroundColor  transparent
+	BorderColor  #C71C22
+	FontColor #343A40
+}
+
+
+skinparam storage {
+	BackgroundColor transparent
+  	BorderColor #DD5600
+	FontColor #DD5600
+}
+
+
+skinparam node {
+	BackgroundColor transparent
+	BorderColor #343A40
+	FontColor #343A40
+}
+
+
+skinparam cloud {
+	BackgroundColor #F2FCFE-#eeeeee
+	BorderColor #F2FCFE
+	FontColor #343A40
+}
+
+
+skinparam database {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam class {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	FontColor #F8F9FA
+	HeaderBackgroundColor #2FA4E7-#2683B9
+	StereotypeFontColor #343A40
+	BorderThickness 1
+	AttributeFontColor #343A40
+	AttributeFontSize 11
+}
+
+
+skinparam object {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	StereotypeFontColor #343A40
+	BorderThickness 1
+	AttributeFontColor #BABDBF
+	AttributeFontSize 11
+}
+
+
+skinparam usecase {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	BorderThickness 2
+	StereotypeFontColor #2FA4E7
+}
+
+
+skinparam rectangle {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	BorderThickness 2
+	StereotypeFontColor #2FA4E7
+}
+
+
+skinparam package {
+	BackgroundColor transparent
+  	BorderColor #2FA4E7
+	FontColor #2FA4E7
+	BorderThickness 2
+}
+
+
+skinparam folder {
+	BackgroundColor transparent
+  	BorderColor #DD5600
+	FontColor #DD5600
+	BorderThickness 2
+}
+
+
+skinparam frame {
+	BackgroundColor transparent
+  	BorderColor #033C73
+	FontColor #033C73
+	BorderThickness 2
+}
+
+
+skinparam state {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+	StartColor #033C73
+	EndColor #033C73
+	AttributeFontColor #BABDBF
+	AttributeFontSize 11
+}
+
+
+skinparam queue {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+skinparam card {
+	BackgroundColor transparent
+	BorderColor #033C73
+	FontColor #033C73
+}
+
+
+skinparam file {
+	BackgroundColor transparent
+	BorderColor #868E96
+	FontColor #868E96
+}
+
+
+skinparam stack {
+		FontColor #2FA4E7
+	BorderColor #2FA4E7
+	BackgroundColor transparent
+}
+
+
+
+
+skinparam backgroundColor white
+
+title "pyTorch BERT model"
+
+class BERT {
+    The main class of our model.
+    It unites all the sub-models
+    ..
+}
+
+class JointEmbedding {
+    Container for embeddings.
+    The first layer in the model
+    ..
+}
+
+class AttentionHead {
+    Attention model
+    ..
+}
+
+class MultiHeadAttention {
+    Container for attention heads
+    ..
+}
+
+class Encoder {
+    Pass embeddings through attention
+    and feed-forward neural network
+    ..
+}
+
+JointEmbedding -* BERT
+Encoder -down-* BERT
+AttentionHead - -* MultiHeadAttention
+MultiHeadAttention - -* Encoder
+
+@enduml
+
+PlantUML version 1.2021.16(Wed Dec 08 19:25:22 EET 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: ru
+Country: UA
+--></g></svg>
