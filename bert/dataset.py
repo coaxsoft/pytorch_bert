@@ -1,6 +1,7 @@
 import random
 import typing
 from collections import Counter
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -246,7 +247,8 @@ class IMDBBertDataset(Dataset):
 
 
 if __name__ == '__main__':
-    ds = IMDBBertDataset('/Users/mikhail/PycharmProjects/rnn_pytorch/data/imdb.csv', ds_from=0, ds_to=500,
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+    ds = IMDBBertDataset(BASE_DIR.joinpath('data/imdb.csv'), ds_from=0, ds_to=50000,
                          should_include_text=True)
     print(ds.df)
-
