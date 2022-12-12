@@ -18,10 +18,10 @@ pip install -r requirements.txt
 ### Installation on Mac M1
 
 You may experience difficulties installing `tensorboard`.
-Tensorboard requires `grpcio` that should be installed with an extra environment
+Tensorboard requires `grpcio` that should be installed with extra environment
 variables. Read more in [StackOverflow](https://stackoverflow.com/questions/66640705/how-can-i-install-grpcio-on-an-apple-m1-silicon-laptop).
 
-So, your installation line in shell for Mac M1 should be look like
+So, your installation line for Mac M1 should look like
 
 ```shell
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
