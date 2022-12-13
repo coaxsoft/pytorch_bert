@@ -147,7 +147,7 @@ class BertTrainer:
                 s = self.training_summary(elapsed, index, average_nsp_loss, average_mlm_loss)
 
                 if index % self._accuracy_every == 0:
-                    s += self.accuracy_summary(index, token, nsp, token_target, nsp_target)
+                    s += self.accuracy_summary(index, token, nsp, token_target, nsp_target, inverse_token_mask)
 
                 print(s)
 
