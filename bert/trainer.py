@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from bert.dataset import IMDBBertDataset
 from bert.model import BERT
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 
 def percentage(batch_size: int, max_index: int, current_index: int):

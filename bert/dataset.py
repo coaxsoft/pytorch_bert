@@ -13,7 +13,7 @@ from torchtext.vocab import vocab
 from torchtext.data.utils import get_tokenizer
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 
 class IMDBBertDataset(Dataset):
@@ -194,7 +194,7 @@ class IMDBBertDataset(Dataset):
         return sentences[sentence_index], sentences[next_sentence_index]
 
     def _preprocess_sentence(self, sentence: typing.List[str], should_mask: bool = True):
-        inverse_token_mask = None
+        inverse_token_mask = []
         if should_mask:
             sentence, inverse_token_mask = self._mask_sentence(sentence)
         sentence, inverse_token_mask = self._pad_sentence([self.CLS] + sentence, [True] + inverse_token_mask)

@@ -21,7 +21,7 @@ CHECKPOINT_DIR = BASE_DIR.joinpath('data/bert_checkpoints')
 timestamp = datetime.datetime.utcnow().timestamp()
 LOG_DIR = BASE_DIR.joinpath(f'data/logs/bert_experiment_{timestamp}')
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 if torch.cuda.is_available():
     torch.cuda.empty_cache()
