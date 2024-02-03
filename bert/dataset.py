@@ -194,7 +194,7 @@ class IMDBBertDataset(Dataset):
         return sentences[sentence_index], sentences[next_sentence_index]
 
     def _preprocess_sentence(self, sentence: typing.List[str], should_mask: bool = True):
-        inverse_token_mask = None
+        inverse_token_mask = []
         if should_mask:
             sentence, inverse_token_mask = self._mask_sentence(sentence)
         sentence, inverse_token_mask = self._pad_sentence([self.CLS] + sentence, [True] + inverse_token_mask)
